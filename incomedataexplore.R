@@ -36,5 +36,10 @@ comzones = crop(comzones, c(-135,-50,20,50))
 
 # merging commuter zones to parental income 
 czonesparental <- merge(comzones,parental,by="cz")
-plot(comzones)
-points(czonesparental, cex = 0.2)
+# plot(comzones)
+
+# Mean percentile rank (relative to other children born in the same year) in the
+# national distribution of household income (i.e. own earnings and spouse’s 
+# earnings) measured as mean earnings in 2014-2015 for the baseline sample
+# kfr and cz
+kfr <- parental[,grepl("kfr",names(parental))]
