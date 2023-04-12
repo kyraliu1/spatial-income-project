@@ -42,4 +42,13 @@ czonesparental <- merge(comzones,parental,by="cz")
 # national distribution of household income (i.e. own earnings and spouse’s 
 # earnings) measured as mean earnings in 2014-2015 for the baseline sample
 # kfr and cz
-kfr <- parental[,grepl("kfr",names(parental))]
+
+# kfr <- czonesparental[,grepl("kfr",names(czonesparental))]
+# kfr <- cbind(kfr,czonesparental['cz'])
+# kfr[,1]
+desired <- c("mean","kfr")
+kfindex <- sapply(x = names(parental),FUN = grepl, desired)
+
+kfr <- parental[,kfindex[,1]&kfindex[,2]]
+kfr <- cbind(kfr,parental['cz'])
+hist(kfr[,1])
