@@ -51,4 +51,27 @@ kfindex <- sapply(x = names(parental),FUN = grepl, desired)
 
 kfr <- parental[,kfindex[,1]&kfindex[,2]]
 kfr <- cbind(kfr,parental['cz'])
-hist(kfr[,1])
+# hist(kfr[,1], 
+#      main= "distribution of mean percentile rank
+#      in the national distribution of household income
+#      for native american females in commuter zones",
+#      xlab = "percentile")
+pooledmean <- c("kfr_natam_pooled_mean",
+                "kfr_asian_pooled_mean",
+                "kfr_black_pooled_mean",
+                "kfr_white_pooled_mean",
+                "kfr_hisp_pooled_mean",
+                "kfr_other_pooled_mean",
+                "kfr_imm_pooled_pooled_mean")
+kfrpooledmean <- kfr[,pooledmean]
+names(kfrpooledmean)<- c("native","asian","black","white",
+                         "hispanic","other-race","immigrant")
+par(mfrow = c(2,2))
+for (i in 1:ncol(kfrpooledmean)){
+  hist(kfrpooledmean[,i],
+       main = paste0( "mean percentile rank in the\n",
+     "national distribution of household\n", 
+     "income for ", names(kfrpooledmean)[i], " americans"),
+     cex.main = 0.7, xlab = 'percentile')
+}
+
