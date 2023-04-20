@@ -5,15 +5,16 @@ if (this == "LAPTOP-IVSPBGCA") {
   wd <- "~/Documents/research/spatial-income-project" # kyra pop wd
 }
 
-
+library(terra)
 library(tidycensus)
 library(censusapi)
+
+# census_api_key("your key",install = TRUE)
 ckey <- Sys.getenv("CENSUS_API_KEY")
 census_api_key(ckey)
 # Retrieve income-related variables for multiple years at the census tract level
-racevar <- c("B02001_001","B02001_002", "B02001_003",
-             "B02001_004","B02001_005","B02001_006","B02001_007",
-             "B02001_008")
+racevar <- c("B02001_001","B02001_002", "B02001_003", "B02001_004",
+             "B02001_005","B02001_006","B02001_007", "B02001_008")
 # B02001_001: Total population
 # B02001_002: Population of one race: White alone
 # B02001_003: Population of one race: Black or African American alone
@@ -41,10 +42,10 @@ incvar <- c("B19001_001", "B19001_002", "B19001_003", "B19001_004",
 # B19001_013: Number of households with income between $75,000 and $99,999
 # B19001_014: Number of households with income between $100,000 and $124,999
 # B19001_015: Number of households with income $125,000 or more
-acs_data <- get_acs(geography = "county",
-                    variables = c(incvar, racevar),
+acs2018 <- get_acs(geography = "county",
+                    variables = c(incvar, racevar), geometry = TRUE,
                     year =2018)
+popblk <- acs2018[acs2018$variable=="B02001_003",]
 
-
-
+# plot(acs2018$geometry[acs2018$variable=="B19001_002"])
 
