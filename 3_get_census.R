@@ -70,5 +70,7 @@ tract2018 <- get_acs(geography = "tract",
                     variables = c(incvar, racevar), geometry = TRUE,
                     year =2018, output="wide", state="CA")
 v <- vect(tract2018)
+# remove empty geometries that caused trouble
+v <- na.omit(v, geom=TRUE)
 v$pblack = v$B02001_003E / v$B02001_001E
 plot(v, "pblack", border=NA, breaks=c(0,0.025,0.05,.1,.2,.5,1))
