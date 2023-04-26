@@ -9,9 +9,12 @@ library(terra)
 library(tidycensus)
 library(censusapi)
 
-# census_api_key("your key",install = TRUE)
+census_api_key("cd0b04aed8602a07aaac364068f6791863fe2bac", install=TRUE)
+#census_api_key("your key",install = TRUE)
 ckey <- Sys.getenv("CENSUS_API_KEY")
 census_api_key(ckey)
+options(tigris_use_cache = TRUE)
+
 # Retrieve income-related variables for multiple years at the census tract level
 racevar <- c("B02001_001","B02001_002", "B02001_003", "B02001_004",
              "B02001_005","B02001_006","B02001_007", "B02001_008")
@@ -44,8 +47,28 @@ incvar <- c("B19001_001", "B19001_002", "B19001_003", "B19001_004",
 # B19001_015: Number of households with income $125,000 or more
 acs2018 <- get_acs(geography = "county",
                     variables = c(incvar, racevar), geometry = TRUE,
-                    year =2018)
+                    year =2018, output="wide")
+v <- vect(acs2018)
+e <- ext(-125, -66, 24, 50)
+v <- crop(v, e)
+
+v$pblack = v$B02001_003E / v$B02001_001E
+plot(v, "pblack", border=NA, breaks=c(0,0.025,0.05,.1,.2,.5,1))
+
+
 popblk <- acs2018[acs2018$variable=="B02001_003",]
+v <- vect(popblk)
+v$loge <- log(v$estimate + 1)
+plot(v, "loge", border=NA)
 
-# plot(acs2018$geometry[acs2018$variable=="B19001_002"])
 
+ plot(acs2018$geometry[acs2018$variable=="B19001_002"])
+
+
+
+tract2018 <- get_acs(geography = "tract",
+                    variables = c(incvar, racevar), geometry = TRUE,
+                    year =2018, output="wide", state="CA")
+v <- vect(tract2018)
+v$pblack = v$B02001_003E / v$B02001_001E
+plot(v, "pblack", border=NA, breaks=c(0,0.025,0.05,.1,.2,.5,1))
