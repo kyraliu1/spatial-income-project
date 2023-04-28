@@ -9,7 +9,7 @@ library(terra)
 library(tidycensus)
 library(censusapi)
 
-census_api_key("cd0b04aed8602a07aaac364068f6791863fe2bac", install=TRUE)
+#census_api_key("cd0b04aed8602a07aaac364068f6791863fe2bac", install=TRUE)
 #census_api_key("your key",install = TRUE)
 ckey <- Sys.getenv("CENSUS_API_KEY")
 census_api_key(ckey)
@@ -59,18 +59,28 @@ plot(v, "pblack", border=NA, breaks=c(0,0.025,0.05,.1,.2,.5,1))
 popblk <- acs2018[acs2018$variable=="B02001_003",]
 v <- vect(popblk)
 v$loge <- log(v$estimate + 1)
-plot(v, "loge", border=NA)
+#plot(v, "loge", border=NA)
 
 
- plot(acs2018$geometry[acs2018$variable=="B19001_002"])
+ #plot(acs2018$geometry[acs2018$variable=="B19001_002"])
 
-
-
-tract2018 <- get_acs(geography = "tract",
+states <- c(state.abb, "DC")
+tract2018=list()
+if(!file.exists("./censusdata/acs5_2018_tract")){
+  dir.create("./censusdata",FALSE,FALSE)
+for(i in 1:length(states)){
+tract2018[[i]] <- get_acs(geography = "tract",
                     variables = c(incvar, racevar), geometry = TRUE,
-                    year =2018, output="wide", state="CA")
-v <- vect(tract2018)
+                    year =2018, output="wide", state=states[i])
+}
+tract2018 <- do.call(rbind,tract2018)
+tract2018 <- vect(tract2018)
+  saveRDS(tract2018,"./censusdata/acs5_2018_tract")
+}
+
+v <- readRDS("./censusdata/acs5_2018_tract")
 # remove empty geometries that caused trouble
 v <- na.omit(v, geom=TRUE)
+v <- crop(v,e)
 v$pblack = v$B02001_003E / v$B02001_001E
 plot(v, "pblack", border=NA, breaks=c(0,0.025,0.05,.1,.2,.5,1))
