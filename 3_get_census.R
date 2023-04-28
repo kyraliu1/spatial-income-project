@@ -62,6 +62,7 @@ v$loge <- log(v$estimate + 1)
 #plot(v, "loge", border=NA)
 
 
+
  #plot(acs2018$geometry[acs2018$variable=="B19001_002"])
 
 states <- c(state.abb, "DC")
@@ -84,3 +85,11 @@ v <- na.omit(v, geom=TRUE)
 v <- crop(v,e)
 v$pblack = v$B02001_003E / v$B02001_001E
 plot(v, "pblack", border=NA, breaks=c(0,0.025,0.05,.1,.2,.5,1))
+
+
+v$lowest <- v$B19001_002E/v$B19001_001E
+plot(v, "lowest", border = NA)
+v$highest = v$B19001_015E/v$B02001_001E
+plot(v, "highest",border = NA, breaks=c(0,0.025,0.05,.1,.2,.3))
+
+     
