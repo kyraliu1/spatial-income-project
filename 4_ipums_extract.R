@@ -4,7 +4,7 @@ if (this == "LAPTOP-IVSPBGCA") {
 } else if (this == "poposaurus"){
   wd <- "~/Documents/research/spatial-income-project" # kyra pop wd
 }
-
+setwd(wd)
 library(ipumsr)
 #set_ipums_api_key("key", save = TRUE)
 # api_key = Sys.getenv("IPUMS_API_KEY")
@@ -19,7 +19,8 @@ exdef <- define_extract_usa("income data extract 1",
                                         "RACOTHER","RACNUM","SEX","AGE",
                                         "INCTOT","FTOTINC","INCWAGE","CPI99",
                                         "POVERTY"))
-# subex <- submit_extract(exdef)
+# submitting extract
+subex <- submit_extract(exdef)
 
 
 # FTOTINC: total family income
@@ -28,15 +29,17 @@ exdef <- define_extract_usa("income data extract 1",
 # migrate1 = whether the person had changed residence since a reference point 1 year ago
 # cpi99 = cpi-u adjustment factor to 1999 dollars  
 
+
+# getting status of extract
 exinf <- get_extract_info("usa:1")
 status <- exinf$status
 
 readyex <- wait_for_extract(exinf)
-
+# when extract is ready, download
 dir.create("./ipums",FALSE,FALSE)
-if (!file.exists("./ipums/usa_00001.dat.gz")){
+if (!file.exists("./ipums/usa_00001.xml")){
 dpath <- download_extract(readyex, download_dir ="./ipums",overwrite = TRUE)
-}else {dpath = "./ipums/usa_00001.dat.gz"}
+}else {dpath = "./ipums/usa_00001.xml"}
 data = read_ipums_micro(dpath)
 
 # HHWT: how many households in U.S. population represented by a given household in sample
