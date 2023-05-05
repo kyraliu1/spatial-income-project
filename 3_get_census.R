@@ -92,4 +92,3 @@ plot(v, "lowest", border = NA)
 v$highest = v$B19001_015E/v$B02001_001E
 plot(v, "highest",border = NA, breaks=c(0,0.025,0.05,.1,.2,.3))
 
-     
