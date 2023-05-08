@@ -24,14 +24,3 @@ hist(inc$INCTOT, breaks = 100)
 hist(inc$INCTOT[inc$RACE==1], breaks = 100, main = "white", 
      xlab = "income")
 
-k = 100
-set.seed(123)
-
-km <- kmeans(inc$INCTOT, centers = k, nstart = 25)
-cs <- km$cluster
-
-km$tot.withinss
-
-# d<-dist(inc$INCTOT)
-# hc<-hclust(d)
-# plot(hc)
