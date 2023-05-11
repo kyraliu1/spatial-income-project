@@ -29,7 +29,8 @@ racevar <- c("B02001_001","B02001_002", "B02001_003", "B02001_004",
 incvar <- c("B19001_001", "B19001_002", "B19001_003", "B19001_004",
             "B19001_005", "B19001_006", "B19001_007", "B19001_008",
             "B19001_009", "B19001_010", "B19001_011", "B19001_012",
-            "B19001_013", "B19001_014", "B19001_015")
+            "B19001_013", "B19001_014", "B19001_015","B19001_016",
+            "B19001_017")
 # B19001_001: Total number of households with income
 # B19001_002: Number of households with income less than $10,000
 # B19001_003: Number of households with income between $10,000 and $14,999
@@ -44,26 +45,29 @@ incvar <- c("B19001_001", "B19001_002", "B19001_003", "B19001_004",
 # B19001_012: Number of households with income between $60,000 and $74,999
 # B19001_013: Number of households with income between $75,000 and $99,999
 # B19001_014: Number of households with income between $100,000 and $124,999
-# B19001_015: Number of households with income $125,000 or more
-acs2018 <- get_acs(geography = "county",
-                    variables = c(incvar, racevar), geometry = TRUE,
-                    year =2018, output="wide")
-v <- vect(acs2018)
+# B19001_015: Number of households with income between $125,000 and 124,999
+# B19001_016: Number of households with income between $150,000 and 199,999
+# B19001_017: Number of households with income of $200,000 or more
+
+# acs2018 <- get_acs(geography = "county",
+#                     variables = c(incvar, racevar), geometry = TRUE,
+#                     year =2018, output="wide")
+# v <- vect(acs2018)
 e <- ext(-125, -66, 24, 50)
-v <- crop(v, e)
-
-v$pblack = v$B02001_003E / v$B02001_001E
-plot(v, "pblack", border=NA, breaks=c(0,0.025,0.05,.1,.2,.5,1))
-
-
-popblk <- acs2018[acs2018$variable=="B02001_003",]
-v <- vect(popblk)
-v$loge <- log(v$estimate + 1)
-#plot(v, "loge", border=NA)
-
-
-
- #plot(acs2018$geometry[acs2018$variable=="B19001_002"])
+# v <- crop(v, e)
+# 
+# v$pblack = v$B02001_003E / v$B02001_001E
+# plot(v, "pblack", border=NA, breaks=c(0,0.025,0.05,.1,.2,.5,1))
+# 
+# 
+# popblk <- acs2018[acs2018$variable=="B02001_003",]
+# v <- vect(popblk)
+# v$loge <- log(v$estimate + 1)
+# #plot(v, "loge", border=NA)
+# 
+# 
+# 
+#  #plot(acs2018$geometry[acs2018$variable=="B19001_002"])
 
 states <- c(state.abb, "DC")
 tract2018=list()
