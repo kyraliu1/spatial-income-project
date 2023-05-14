@@ -31,3 +31,5 @@ if (!file.exists("./ipums/usa_00002.xml")){
   dpath <- download_extract(readyex, download_dir ="./ipums",overwrite = TRUE)
 }else {dpath = "./ipums/usa_00002.xml"}
 d = read_ipums_micro(dpath)
+
+d$statename = as.character((as_factor(d$STATEFIP)))
