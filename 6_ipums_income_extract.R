@@ -63,10 +63,18 @@ if (!file.exists(paste0("./ipums/usa_0000",n,".xml"))){
 d = read_ipums_micro(dpath)
 
 d$statename = as.character((as_factor(d$STATEFIP)))
+d$countyname <- as.character((as_factor(d$COUNTYFIP)))
 
+# no income data
 nodata = d[,c("INCTOT","INCWAGE","FTOTINC")] == 	9999999 
 d[,c("INCTOT","INCWAGE","FTOTINC")][nodata]=-999999
 
 d <- d[!nodata[,1],]
 yr <- table(d$YEAR) # data per year where "total personal income" is available
 
+# library(geodata)
+# usa <- gadm("usa", level = 1, ".")
+# 
+# names(usa)[4] <- "statename"
+# 
+# d <- merge(d,usa,"statename")
