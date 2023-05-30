@@ -20,12 +20,14 @@ fc1 <- "./census/household_income_1969_99"
   dl(furl = c1,fpath = fc1)
 hc <- read.csv(fc1)
 
+# cleaning
 names(hc) <- c("county","y1999","y1989","y1979","y1969")
 hc <- hc[-5:-1,-6]
 hc <- hc[hc$county!="",] #removing empty
 
 hc <- hc[grepl(",",hc$county),] # removing statewide 
 aa <- hc
+# numeric values for income
 for (i in 2:5){
 hc[,i] <- gsub(",","",hc[,i])
 hc[,i] <- as.numeric(hc[,i])
@@ -43,6 +45,20 @@ c2 <- "https://www2.census.gov/programs-surveys/decennial/tables/time-series/his
 fc2 <- "./census/family_income_1959_89"
 dl(c2,fc2)
 fin <- read.csv(fc2,header=F)
+names(fin) <- c("county","y1989","y1979","y1969","y1959")
+
+fin <- fin[-5:-1,]
+fin <- fin[fin$county!="",] #removing empty
+
+fin <- fin[grepl(",",fin$county),] # removing statewide 
+
+for (i in 2:5){
+  fin[,i] <- gsub(",","",fin[,i])
+  fin[,i] <- as.numeric(fin[,i])
+}
+
+fin <- merge(counties,fin, "county")
+plot(fin, 17:20, border = NA, main = names(fin)[17:20])
 
 # per capita income by county: 1959, 69, 79, 89
 c3 <- "https://www2.census.gov/programs-surveys/decennial/tables/time-series/historical-income-counties/county3.csv"
@@ -50,6 +66,20 @@ fc3 <- "./census/percap_income_1959_89"
 dl(c3,fc3)
 ppi <- read.csv(fc3,header = F)
 
+names(ppi) <- c("county","y1989","y1979","y1969","y1959")
+
+ppi <- ppi[-5:-1,]
+ppi <- ppi[ppi$county!="",] #removing empty
+
+ppi <- ppi[grepl(",",ppi$county),] # removing statewide 
+
+for (i in 2:5){
+  ppi[,i] <- gsub(",","",ppi[,i])
+  ppi[,i] <- as.numeric(ppi[,i])
+}
+
+ppi <- merge(counties,ppi, "county")
+plot(ppi, 17:20, border = NA, main = names(fin)[17:20])
 # percent change in median household income: 1969, 1979, 1989
 c4 <- "https://www2.census.gov/programs-surveys/decennial/tables/time-series/historical-income-counties/county4.csv"
 fc4 <- "./census/pctchange_median_household_1969_89"
