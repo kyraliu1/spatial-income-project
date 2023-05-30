@@ -20,18 +20,23 @@ fc1 <- "./census/household_income_1969_99"
   dl(furl = c1,fpath = fc1)
 hc <- read.csv(fc1)
 
-names(hc) <- c("county","1999","1989","1979","1969")
+names(hc) <- c("county","y1999","y1989","y1979","y1969")
 hc <- hc[-5:-1,-6]
 hc <- hc[hc$county!="",] #removing empty
 
-hc <- hc[grepl(",",hc$county),] # removing statewide
+hc <- hc[grepl(",",hc$county),] # removing statewide 
+aa <- hc
+for (i in 2:5){
+hc[,i] <- gsub(",","",hc[,i])
+hc[,i] <- as.numeric(hc[,i])
+}
+
 sta <- data.frame(state.name,state.abb)
 counties <- merge(counties, sta, "state.name")
 counties$county <- paste0(counties$NAME_2," County, ", counties$state.abb)
 
 hc <- merge(counties,hc, "county")
-
-plot(hc, "1999", border = NA)
+plot(hc, 17:20, border = NA, main = names(hc)[17:20])
 
 # median family income by county: 1959, 69, 79, 89
 c2 <- "https://www2.census.gov/programs-surveys/decennial/tables/time-series/historical-income-counties/county2.csv"
