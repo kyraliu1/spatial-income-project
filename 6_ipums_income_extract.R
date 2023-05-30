@@ -6,6 +6,8 @@ if (this == "LAPTOP-IVSPBGCA") {
 }
 setwd(wd)
 library(ipumsr)
+library(dplyr)
+library(terra)
 
 # defining wanted samples and variables
 samps <- c("us1950a","us1960a",
@@ -63,18 +65,71 @@ if (!file.exists(paste0("./ipums/usa_0000",n,".xml"))){
 d = read_ipums_micro(dpath)
 
 d$statename = as.character((as_factor(d$STATEFIP)))
-d$countyname <- as.character((as_factor(d$COUNTYFIP)))
+d$cofip <- as.character((as_factor(d$COUNTYFIP)))
+d$fip <- paste0(d$STATEFIP,d$cofip)
 
 # no income data
 nodata = d[,c("INCTOT","INCWAGE","FTOTINC")] == 	9999999 
 d[,c("INCTOT","INCWAGE","FTOTINC")][nodata]=-999999
 
 d <- d[!nodata[,1],]
+
+rm(nodata) # no memory
 yr <- table(d$YEAR) # data per year where "total personal income" is available
 
-# library(geodata)
-# usa <- gadm("usa", level = 1, ".")
-# 
-# names(usa)[4] <- "statename"
-# 
-# d <- merge(d,usa,"statename")
+
+# where are counties available
+
+dc <- d[d$COUNTYFIP!=0,]
+table(d$YEAR)
+
+# # this is being mean to me
+# if (!file.exists("./ipums/countyfips.xlsx")){
+#   download.file("https://usa.ipums.org/usa/resources/volii/ipums_usa_identified_counties.xlsx",
+#                 "./ipums/countyfips.xlsx" )
+# }
+# doing it manually for now
+co <- read.csv("./ipums/countyfips.csv")
+
+# seems like there are 589 counties available
+co$fip <- paste0(co$STATEFIP,co$COUNTYFIP)
+co <- co[,c(2,6)]
+names(co)[1] <- "countyname"
+dc <- merge(d, co, "fip")
+
+rm(co) # no memory haha
+dc$fullcounty <- paste0(d$countyname,", ",d$statename)
+
+
+# available counties
+# not sure why counties disappeared, maybe they are just not in the data
+counties <- unique(d$fullcounty)
+
+grouped <- dc %>% group_by(fullcounty, YEAR)
+avg <- grouped %>% summarize(average = mean(INCTOT))
+avg2010 <- avg[avg$YEAR==2010,]
+
+usa <- geodata::gadm("usa",2,".")
+#names(usa)
+usa$fullcounty <- paste0(usa$NAME_2,", ",usa$NAME_1 )
+
+
+usa<- merge(usa,avg2010,"fullcounty")
+
+plot(usa, "average", border = NA)
+
+# now with states
+
+# state info is available for every row
+
+
+states <- geodata::gadm("usa", level = 1, ".")
+
+names(states)[4] <- "statename"
+gs <- d %>% group_by(statename, YEAR)
+stav <- gs %>% summarize(average = mean(INCTOT))
+st2010 <- stav[stav$YEAR==2010,]
+
+ st2010 <- merge(states,st2010,"statename")
+st2010 <- crop(st2010,ext(usa))
+plot(st2010, "average", border = NA) 

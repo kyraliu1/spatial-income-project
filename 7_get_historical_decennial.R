@@ -7,7 +7,7 @@ if (this == "LAPTOP-IVSPBGCA") {
 setwd(wd)
 dl <- function(furl, fpath){
   if (!file.exists(fpath)){
-    download.file(furl, fpath, wb = T)
+    download.file(furl, fpath, mode = "wb")
     }
 }
 dir.create("./census",F,F)
