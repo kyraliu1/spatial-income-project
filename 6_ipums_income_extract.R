@@ -130,6 +130,7 @@ gs <- d %>% group_by(statename, YEAR)
 stav <- gs %>% summarize(average = mean(INCTOT))
 st2010 <- stav[stav$YEAR==2010,]
 
- st2010 <- merge(states,st2010,"statename")
+st2010 <- merge(states,st2010,"statename")
 st2010 <- crop(st2010,ext(usa))
 plot(st2010, "average", border = NA) 
+
