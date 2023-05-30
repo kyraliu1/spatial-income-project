@@ -98,12 +98,12 @@ names(co)[1] <- "countyname"
 dc <- merge(d, co, "fip")
 
 rm(co) # no memory haha
-dc$fullcounty <- paste0(d$countyname,", ",d$statename)
+dc$fullcounty <- paste0(dc$countyname,", ",dc$statename)
 
 
 # available counties
 # not sure why counties disappeared, maybe they are just not in the data
-counties <- unique(d$fullcounty)
+counties <- unique(dc$fullcounty)
 
 grouped <- dc %>% group_by(fullcounty, YEAR)
 avg <- grouped %>% summarize(average = mean(INCTOT))
