@@ -90,4 +90,8 @@ pc <- read.csv(fc4,header=F)
 c5 <- "https://www2.census.gov/programs-surveys/decennial/tables/time-series/historical-income-counties/county5.xls"
 fc5 <- "./census/census_income_ineq_1990_2000"
 dl(c5, fc5)
+
 #ieq <- read.csv(fc5, header = F)
+
+##### race
+pc
