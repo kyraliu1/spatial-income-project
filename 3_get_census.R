@@ -4,7 +4,7 @@ if (this == "LAPTOP-IVSPBGCA") {
 } else if (this == "poposaurus"){
   wd <- "~/Documents/research/spatial-income-project" # kyra pop wd
 }
-
+setwd(wd)
 library(terra)
 library(tidycensus)
 library(censusapi)
@@ -30,7 +30,7 @@ incvar <- c("B19001_001", "B19001_002", "B19001_003", "B19001_004",
             "B19001_005", "B19001_006", "B19001_007", "B19001_008",
             "B19001_009", "B19001_010", "B19001_011", "B19001_012",
             "B19001_013", "B19001_014", "B19001_015","B19001_016",
-            "B19001_017")
+            "B19001_017","B06011_001")
 # B19001_001: Total number of households with income
 # B19001_002: Number of households with income less than $10,000
 # B19001_003: Number of households with income between $10,000 and $14,999
@@ -49,6 +49,8 @@ incvar <- c("B19001_001", "B19001_002", "B19001_003", "B19001_004",
 # B19001_016: Number of households with income between $150,000 and 199,999
 # B19001_017: Number of households with income of $200,000 or more
 
+
+# B06011_001: Median income in past 12 months
 # acs2018 <- get_acs(geography = "county",
 #                     variables = c(incvar, racevar), geometry = TRUE,
 #                     year =2018, output="wide")
@@ -96,3 +98,5 @@ plot(v, "lowest", border = NA)
 v$highest = v$B19001_015E/v$B02001_001E
 plot(v, "highest",border = NA, breaks=c(0,0.025,0.05,.1,.2,.3))
 
+plot(v,"B06011_001E",border = NA,breaks = c(0,10000,seq(15000,150000,10000)),
+     main = "median income")
