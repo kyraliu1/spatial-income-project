@@ -100,3 +100,25 @@ plot(v, "highest",border = NA, breaks=c(0,0.025,0.05,.1,.2,.3))
 
 plot(v,"B06011_001E",border = NA,breaks = c(0,10000,seq(15000,150000,10000)),
      main = "median income")
+
+### 2010
+tract2010 <- list()
+if(!file.exists("./censusdata/acs5_2010_tract")){
+  dir.create("./censusdata",FALSE,FALSE)
+  for(i in 1:length(states)){
+    tract2010[[i]] <- get_acs(geography = "tract",
+                              variables = c(incvar, racevar), geometry = TRUE,
+                              year =2010, output="wide", state=states[i])
+  }
+  tract2010 <- do.call(rbind,tract2010)
+  tract2010 <- vect(tract2010)
+  saveRDS(tract2010,"./censusdata/acs5_2010_tract")
+}
+
+d10 <- readRDS("./censusdata/acs5_2010_tract")
+par(mfrow = c(1,2))
+plot(v,"B06011_001E",border = NA,breaks = c(0,10000,seq(15000,150000,10000)),
+     main = "2018")
+plot(d10,"B06011_001E",border = NA,breaks = c(0,10000,seq(15000,150000,10000)),
+     main = "2010")
+title("median income")
