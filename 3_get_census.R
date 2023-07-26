@@ -90,6 +90,7 @@ v <- readRDS("./censusdata/acs5_2018_tract")
 v <- na.omit(v, geom=TRUE)
 v <- crop(v,e)
 v$pblack = v$B02001_003E / v$B02001_001E
+v$pwhite = v$B02001_002E/v$B02001_001E
 plot(v, "pblack", border=NA, breaks=c(0,0.025,0.05,.1,.2,.5,1))
 
 
@@ -116,9 +117,34 @@ if(!file.exists("./censusdata/acs5_2010_tract")){
 }
 
 d10 <- readRDS("./censusdata/acs5_2010_tract")
-par(mfrow = c(1,2))
-plot(v,"B06011_001E",border = NA,breaks = c(0,10000,seq(15000,150000,10000)),
+d10 <- crop(d10)
+d10$pblack = d10$B02001_003E / d10$B02001_001E
+d10$pwhite = d10$B02001_002E/d10$B02001_001E
+# par(mfrow = c(2,1))
+# plot(v,"B06011_001E",border = NA,breaks = c(0,10000,seq(15000,150000,10000)),
+#      main = "2018")
+# plot(d10,"B06011_001E",border = NA,breaks = c(0,10000,seq(15000,150000,10000)),
+#      main = "2010")
+# title("median income")
+
+par(mfrow = c(2,1))
+plot(v,"B06011_001E",border = NA,type = "continuous",
      main = "2018")
-plot(d10,"B06011_001E",border = NA,breaks = c(0,10000,seq(15000,150000,10000)),
+plot(d10,"B06011_001E",border = NA,type = "continuous",
      main = "2010")
 title("median income")
+
+
+par(mfrow = c(2,1))
+plot(v,"pblack",border = NA,type = "continuous",
+     main = "proportion black 2018")
+plot(d10,"pblack",border = NA,type = "continuous",
+     main = "proportion black 2010")
+
+
+
+par(mfrow = c(2,1))
+plot(v,"pwhite",border = NA,type = "continuous",
+     main = "proportion white 2018")
+plot(d10,"pwhite",border = NA,type = "continuous",
+     main = "proportion white 2010")
