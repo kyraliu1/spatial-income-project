@@ -1,3 +1,7 @@
+# ipums extract individual-level data from 1950 to 2010 for sex, age, race, 
+# income with geographic information, state for all, some counties
+# downloads extract tp ./ipums (creates)
+
 this <- system('hostname', TRUE)
 if (this == "LAPTOP-IVSPBGCA") {
   wd <- "G:/.shortcut-targets-by-id/1mfeEftF_LgRcxOT98CBIaBbYN4ZHkBr_/share/spatial_income" 
@@ -69,7 +73,7 @@ d$cofip <- as.character((as_factor(d$COUNTYFIP)))
 d$fip <- paste0(d$STATEFIP,d$cofip)
 
 # no income data
-nodata = d[,c("INCTOT","INCWAGE","FTOTINC")] == 	9999999 
+nodata = d[,c("INCTOT","INCWAGE","FTOTINC")] == 9999999 
 d[,c("INCTOT","INCWAGE","FTOTINC")][nodata]=-999999
 
 d <- d[!nodata[,1],]
@@ -97,12 +101,13 @@ co <- co[,c(2,6)]
 names(co)[1] <- "countyname"
 dc <- merge(d, co, "fip")
 
-rm(co) # no memory haha
+rm(co) 
 dc$fullcounty <- paste0(dc$countyname,", ",dc$statename)
 
 
 # available counties
-# not sure why counties disappeared, maybe they are just not in the data
+# not sure why some counties disappeared, maybe they are just not in the data
+# grouping counties by year
 counties <- unique(dc$fullcounty)
 
 grouped <- dc %>% group_by(fullcounty, YEAR)
@@ -116,7 +121,7 @@ usa$fullcounty <- paste0(usa$NAME_2,", ",usa$NAME_1 )
 
 usa<- merge(usa,avg2010,"fullcounty")
 
-plot(usa, "average", border = NA)
+plot(usa, "average", border = NA, type = 'continuous')
 
 # now with states
 
@@ -132,5 +137,5 @@ st2010 <- stav[stav$YEAR==2010,]
 
 st2010 <- merge(states,st2010,"statename")
 st2010 <- crop(st2010,ext(usa))
-plot(st2010, "average", border = NA) 
+plot(st2010, "average", border = NA, type = 'continuous') 
 
