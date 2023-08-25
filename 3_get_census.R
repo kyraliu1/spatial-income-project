@@ -117,7 +117,7 @@ if(!file.exists("./censusdata/acs5_2010_tract")){
 }
 
 d10 <- readRDS("./censusdata/acs5_2010_tract")
-d10 <- crop(d10)
+#d10 <- crop(d10,e)
 d10$pblack = d10$B02001_003E / d10$B02001_001E
 d10$pwhite = d10$B02001_002E/d10$B02001_001E
 # par(mfrow = c(2,1))
