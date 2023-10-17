@@ -28,9 +28,8 @@ prev <- get_recent_extracts_info_list("usa") # all recent extracts
 n <- NA
 # checking if this particular extract has been submitted before
 for (i in 1:length(prev)){
-  if(identical(prev[[c(i,6)]], samps) & identical(prev[[c(i,7)]],
-     vars)){
-    n <- as.character(prev[[c(i,10)]]) # extract number
+  if(prev[[i]]$description=="all income"){
+    n <- prev[[i]]$number # extract number
     break
   }
   
@@ -81,7 +80,7 @@ d <- d[!nodata[,1],]
 rm(nodata) # no memory
 yr <- table(d$YEAR) # data per year where "total personal income" is available
 
-
+#yr
 # where are counties available
 
 dc <- d[d$COUNTYFIP!=0,]

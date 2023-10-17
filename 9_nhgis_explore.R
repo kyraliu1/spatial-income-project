@@ -19,11 +19,12 @@ library(tidycensus)
 # nhgis 3: AB2: median family income in previous year 1980-2021
 # nhgis 4: BD5: per capita income in previous year 1980-2021
 
+# nhgis 6: AV0: total population
 nhdirs <- list.dirs(path = "./ipums",recursive = F)
 
-race_ctysub = read.csv(list.files(nhdirs[1],pattern = 'sub.csv',full.names = T))
-race_county = read.csv(list.files(nhdirs[1],pattern = 'county.csv',full.names = T))
-race_tract = read.csv(list.files(nhdirs[1],pattern = 'tract.csv',full.names = T))
+race_ctysub = read.csv(list.files(nhdirs[2],pattern = 'sub.csv',full.names = T))
+race_county = read.csv(list.files(nhdirs[2],pattern = 'county.csv',full.names = T))
+race_tract = read.csv(list.files(nhdirs[2],pattern = 'tract.csv',full.names = T))
 
 # AA: Persons: White (single race) 
 # AB: Persons: Black or African American (single race)
