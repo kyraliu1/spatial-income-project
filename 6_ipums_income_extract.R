@@ -62,7 +62,9 @@ if (is.na(n)){
 if (!file.exists(paste0("./ipums/usa_0000",n,".xml"))){
   dpath <- download_extract(readyex, download_dir ="./ipums",overwrite = TRUE)
   
-}else {dpath = paste0("./ipums/usa_0000",n,".xml")}
+}else {
+  dpath = paste0("./ipums/usa_0000",5,".xml")
+}
 
 # read data
 d = read_ipums_micro(dpath)
@@ -84,8 +86,9 @@ yr <- table(d$YEAR) # data per year where "total personal income" is available
 # where are counties available
 
 dc <- d[d$COUNTYFIP!=0,]
-table(d$YEAR)
+table(dc$YEAR)
 
+View(dc)
 # # this is being mean to me
 # if (!file.exists("./ipums/countyfips.xlsx")){
 #   download.file("https://usa.ipums.org/usa/resources/volii/ipums_usa_identified_counties.xlsx",
