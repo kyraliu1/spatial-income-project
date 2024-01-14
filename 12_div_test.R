@@ -1,8 +1,9 @@
 # shannon index, diversity vs income
 
-# setup
+# setup -------------------------------------------------------------------
 wd <- "~/Documents/research/spatial-income-project" # kyra pop wd
 setwd(wd)
+
 
 library(terra)
 library(geodata)
@@ -11,24 +12,34 @@ library(ggplot2)
 library(gridExtra)
 library(MASS)
 
+# read data ---------------------------------------------------------------
+
+
 state <- readRDS('./ipums/state_level_d')
 
 # H = -sum(p * ln(p))
 
 tract <- readRDS('./ipums/tract_by_county')
 #tract <- tract[tract$STATE != 'Alaska',]
+county <- readRDS('./ipums/county_by_state')
+
+# clean data --------------------------------------------------------------
+
 
 tract$medinc80[tract$medinc80 == 0] <- NA
 tract$medinc90[tract$medinc90 == 0] <- NA
 tract$medinc00[tract$medinc00 == 0] <- NA
 tract$medinc10[tract$medinc10 == 0] <- NA
-county <- readRDS('./ipums/county_by_state')
 #tract <- tract[tract$STATE != 'Alaska',]
 
 county$medinc80[county$medinc80 == 0] <- NA
 county$medinc90[county$medinc90 == 0] <- NA
 county$medinc00[county$medinc00 == 0] <- NA
 county$medinc10[county$medinc10 == 0] <- NA
+
+
+# find H and e^H tracts ----------------------------------------------------------
+
 
 yr <- c('80', '90', '00' , '10')
 year <- c(1980,1990,2000,2010)
@@ -46,6 +57,11 @@ for (i in 1:4){
   tract[[paste0('h',yr[i])]] <- exp(htract[[i]])
   
 }
+
+
+# model e^H tracts---------------------------------------------------------------
+
+
 modtract = list()
 hextract= list()
 steptract = list()
@@ -56,6 +72,9 @@ nx <- data.frame(h80 = newx, h90 = newx, h00 = newx, h10 = newx)
 par(mfrow = c(2,2),mar = c(4,4,3,1),las = 1)
 #for(i in 1:4){
 
+# model selection tracts ---------------------------------------------------------
+
+
 modsel <- function(dlevel){
   results <- list()  
   for (i in 1:4){
@@ -65,7 +84,7 @@ modsel <- function(dlevel){
   linmod <- lm(paste0(m,'~',h),data = dlevel)
   
   
-  stepped <- stepAIC(quadmod,direction = 'backward',
+  stepped <- stepAIC(quadmod,direction = 'forward',
                      scope = list(upper = quadmod,lower = ~1))
   results[[i]]<-summary(stepped)
   }
@@ -77,7 +96,8 @@ tractsel <- modsel(tract)
 
 #}
 
-#plotting tracts
+# plotting tracts ---------------------------------------------------------
+
 for(i in 1:4){
   
     m <- paste0('medinc',yr[i])
@@ -94,6 +114,10 @@ for(i in 1:4){
   
 }
 title(expression("Tract:County Median Income vs. " * e^italic(H)),outer = T,line = -1.5)
+
+# hexbin plots ------------------------------------------------------------
+
+
 # using hexbin package
 # for (i in 1:4){
 #   plot(hextract[[i]] ,xlab = expression(e^italic(H)),ylab = 'median income ratio',
@@ -121,6 +145,8 @@ title(expression("Tract:County Median Income vs. " * e^italic(H)),outer = T,line
 # grid.arrange(grobs = plot_list, ncol = 2)
 
 
+# calculate H counties ----------------------------------------------------
+
 
 hcounty <- list()
 
@@ -136,6 +162,9 @@ for (i in 1:4){
   county[[paste0('h',yr[i])]] <- exp(hcounty[[i]])
   
 }
+
+# model county ------------------------------------------------------------
+
 
 modcounty = list()
 
@@ -165,6 +194,9 @@ for(i in 1:4){
   
 }
 title(expression("County:State Median Income vs. " * e^italic(H)),outer = T,line = -1.5)
+
+
+# state -------------------------------------------------------------------
 
 
 
@@ -197,7 +229,7 @@ for(i in 1:4){
   wi <- state[[paste0('pop',yr[i])]]
   
   # fit model
-  modstate[[i]] <- lm(paste0(m,'~',h,'+ I(',h,'^2)'),data = state,weight = wi)
+  modstate[[i]] <- lm(paste0(m,'~',h,'+ I(',h,'^2)'), data = state, weight = wi)
   #state[[paste0('hcfit',yr[i])]] <- modstate[[i]]$fitted.values
   
   # plot

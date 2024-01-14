@@ -1,4 +1,8 @@
 # individual level analysis
+
+# setup -------------------------------------------------------------------
+
+
 this <- system('hostname', TRUE)
 if (this == "LAPTOP-IVSPBGCA") {
   wd <- "G:/.shortcut-targets-by-id/1mfeEftF_LgRcxOT98CBIaBbYN4ZHkBr_/share/spatial_income" 
@@ -12,10 +16,16 @@ library(terra)
 library(geodata)
 #dpath = paste0("./ipums/usa_0000",5,".xml")
 
+# read data ---------------------------------------------------------------
+
+
 # read data
 #d = read_ipums_micro(dpath)
 #saveRDS(d,"./ipums/ipums_micro")
 d <- readRDS("./ipums/ipums_micro")
+
+# cleaning ----------------------------------------------------------------
+
 
 d$statename = as.character((as_factor(d$STATEFIP)))
 d$cofip <- as.character((as_factor(d$COUNTYFIP)))
@@ -37,6 +47,9 @@ d$r_race[d$RACE==2] <- "black"
 d$r_race[d$RACE==3] <- "native"
 d$r_race[d$RACE %in% c(4,5,6)] <- "aapi"
 d$r_race[d$RACE %in% c(7,8,9)] <- "other"
+
+
+# median income by race ---------------------------------------------------
 
 
 year = c(1980,1990,2000,2010)
