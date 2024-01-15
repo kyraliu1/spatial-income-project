@@ -34,8 +34,10 @@ tract$B79AA1980[tract$B79AA1980 == 0] <- NA
 tract$B79AA1990[tract$B79AA1990 == 0] <- NA
 tract$B79AA2000[tract$B79AA2000 == 0] <- NA
 tract$B79AA2010[tract$B79AA2010 == 0] <- NA
-county <- readRDS('./ipums/county_by_state')
+
 #tract <- tract[tract$STATE != 'Alaska',]
+county <- readRDS('./ipums/county_by_state')
+names(county)[names(county) == 'B79AA135'] <- 'B79AA2010'
 
 county$B79AA1980[county$B79AA1980 == 0] <- NA
 county$B79AA1990[county$B79AA1990 == 0] <- NA
@@ -97,7 +99,7 @@ modsel <- function(dlevel){
   }
   return(results)
   #tract[[paste0('htfit',yr[i])]] <- modtract[[i]]$fitted.values
-  #hextract[[i]] <- hexbin(exp(htract[[i]]),tract[[paste0('medinc',yr[i])]])
+  #hextract[[i]] <- hexbin(exp(htract[[i]]),tract[[paste0('B79AA',yr[i])]])
 }
 tractsel <- modsel(tract)
 # plotting tracts ---------------------------------------------------------
@@ -118,3 +120,53 @@ for(i in 1:4){
   
 }
 title(expression("Tract Median Income vs. " * e^italic(H)),outer = T,line = -1.5)
+# calculate H counties ----------------------------------------------------
+
+
+hcounty <- list()
+
+for (i in 1:4){
+  
+  w <- county[[paste0('pwhite',yr[i])]]
+  b <-county[[paste0('pblack',yr[i])]]
+  a <- county[[paste0('paapi',yr[i])]]
+  n <- county[[paste0('pnative',yr[i])]]
+  o <- county[[paste0('pother',yr[i])]]
+  
+  hcounty[[i]] <- -1*(w * log(w)+ b * log(b)+ a * log(a)+ n * log(n)+o * log(o))
+  county[[paste0('h',yr[i])]] <- exp(hcounty[[i]])
+  
+}
+
+# county mods -------------------------------------------------------------
+
+
+
+modcounty = list()
+
+countysel <- modsel(county)
+
+
+for(i in 1:4){
+  
+  # variable names for year
+  m <- paste0('B79AA',year[i])
+  h <- paste0('h',yr[i])
+  wi <- county[[paste0('pop',yr[i])]]
+  
+  # fit model
+  modcounty[[i]] <- lm(paste0(m,'~',h,'+ I(',h,'^2)'),data = county,weight = wi)
+  #county[[paste0('hcfit',yr[i])]] <- modcounty[[i]]$fitted.values
+  
+  # plot
+  plot(exp(hcounty[[i]]),county[[paste0('B79AA',year[i])]]#, main = year[i]
+       ,xlab = expression(e^italic(H)),ylab = 'median income ratio',cex = 0.25,
+       xlim = c(1,5),#ylim = c(0.4,2.5),
+       col = rgb(0,0,0,0.8))
+  text(3,2.2,year[i],pos = 4,cex = 1.5)
+  
+  fit <- predict(modcounty[[i]],nx)
+  lines(nx[,i],fit,col = 'red')
+  
+}
+title(expression("County Median Income vs. " * e^italic(H)),outer = T,line = -1.5)
