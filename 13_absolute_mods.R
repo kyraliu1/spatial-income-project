@@ -45,6 +45,8 @@ county$B79AA2000[county$B79AA2000 == 0] <- NA
 #county$B79AA2010[county$B79AA2010 == 0] <- NA
 
 
+names(state)[names(state) == 'B79AA135'] <- 'B79AA2010'
+
 
 #tract <- tract[tract$STATE != 'Alaska',]
 
@@ -170,3 +172,59 @@ for(i in 1:4){
   
 }
 title(expression("County Median Income vs. " * e^italic(H)),outer = T,line = -1.5)
+
+
+# state -------------------------------------------------------------------
+
+
+
+hstate <- list()
+
+for (i in 1:4){
+  
+  w <- state[[paste0('pwhite',yr[i])]]
+  b <-state[[paste0('pblack',yr[i])]]
+  a <- state[[paste0('paapi',yr[i])]]
+  n <- state[[paste0('pnative',yr[i])]]
+  o <- state[[paste0('pother',yr[i])]]
+  
+  hstate[[i]] <- -1*(w * log(w)+ b * log(b)+ a * log(a)+ n * log(n)+o * log(o))
+  state[[paste0('h',yr[i])]] <- exp(hstate[[i]])
+  
+}
+
+# state 
+statesel <- modsel(state)
+modstate = list()
+par(mfrow = c(2,2),mar = c(4,4,3,1),las = 1)
+
+
+for(i in 1:4){
+  
+  # variable names for year
+  m <- paste0('B79AA',year[i])
+  h <- paste0('h',yr[i])
+  wi <- state[[paste0('pop',yr[i])]]
+  
+  # fit model
+  modstate[[i]] <- lm(paste0(m,'~',h,'+ I(',h,'^2)'), data = state, weight = wi)
+  #state[[paste0('hcfit',yr[i])]] <- modstate[[i]]$fitted.values
+  
+  # plot
+  plot(exp(hstate[[i]]),state[[paste0('B79AA',year[i])]]#, main = year[i]
+       ,xlab = expression(e^italic(H)),ylab = 'median income ratio',cex = 0.65,
+       xlim = c(1,3),pch = 20,#ylim = c(0.4,2.5),
+       col = rgb(0,0,0,0.8))
+  text(3,2.2,year[i],pos = 4,cex = 1.5)
+  
+  fit <- predict(modstate[[i]],nx)
+  lines(nx[,i],fit,col = 'red')
+  
+}
+title(main = expression("State
+                        
+                        
+                        
+                        Median Income vs. " * e^italic(H)),outer = T,line = -1.5)
+
+
