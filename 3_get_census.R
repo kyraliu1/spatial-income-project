@@ -1,3 +1,10 @@
+# getting data from census api, uses tidy census and census api package
+# we ended up getting these again, all from ipums because they have 
+# more time available.
+
+# setup -------------------------------------------------------------------
+
+
 this <- system('hostname', TRUE)
 if (this == "LAPTOP-IVSPBGCA") {
   wd <- "G:/.shortcut-targets-by-id/1mfeEftF_LgRcxOT98CBIaBbYN4ZHkBr_/share/spatial_income" 
@@ -14,6 +21,9 @@ library(censusapi)
 ckey <- Sys.getenv("CENSUS_API_KEY")
 census_api_key(ckey)
 options(tigris_use_cache = TRUE)
+
+# defining desired variables ----------------------------------------------
+
 
 # Retrieve income-related variables for multiple years at the census tract level
 racevar <- c("B02001_001","B02001_002", "B02001_003", "B02001_004",

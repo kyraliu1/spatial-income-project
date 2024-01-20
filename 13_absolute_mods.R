@@ -1,4 +1,4 @@
-
+# doing the diversity index again, this time without the relative income 
 # setup -------------------------------------------------------------------
 wd <- "~/Documents/research/spatial-income-project" # kyra pop wd
 setwd(wd)

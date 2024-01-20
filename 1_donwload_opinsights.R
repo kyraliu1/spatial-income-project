@@ -1,3 +1,10 @@
+# downloads data from opportunity insights.org; this is from the exploration phase
+# script 2_initial_plots explores it a little but, but we have not looked at this 
+# for a while
+
+
+# setup -------------------------------------------------------------------
+
 
 this <- system('hostname', TRUE)
 if (this == "LAPTOP-IVSPBGCA") {
@@ -10,6 +17,9 @@ setwd(wd)
 
 library(terra)
 #library(tidycensus)
+
+# downloads ---------------------------------------------------------------
+
 
 # getting aggregated migration data
 agmigfi <- "raw/opinsights/aggmigration"

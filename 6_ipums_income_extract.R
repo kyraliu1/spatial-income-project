@@ -1,6 +1,7 @@
 # ipums extract individual-level data from 1950 to 2010 for sex, age, race, 
 # income with geographic information, state for all, some counties
-# downloads extract tp ./ipums (creates)
+# downloads extract to ./ipums (creates)
+# gets individual data that is used
 
 this <- system('hostname', TRUE)
 if (this == "LAPTOP-IVSPBGCA") {

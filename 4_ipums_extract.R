@@ -1,3 +1,6 @@
+# initial testing of ipums extract, gets some income, race, and migration data
+# not in use later
+# setup
 this <- system('hostname', TRUE)
 if (this == "LAPTOP-IVSPBGCA") {
   wd <- "G:/.shortcut-targets-by-id/1mfeEftF_LgRcxOT98CBIaBbYN4ZHkBr_/share/spatial_income" 
@@ -9,6 +12,7 @@ library(ipumsr)
 #set_ipums_api_key("key", save = TRUE)
 # api_key = Sys.getenv("IPUMS_API_KEY")
 
+# defining extract
 exdef <- define_extract_usa("income data extract 1", 
                             samples = c("us2021c","us2016c"),
                             variables = c("REGION", "STATEFIP","COUNTYFIP",

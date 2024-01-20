@@ -1,4 +1,5 @@
-# shannon index, diversity vs income
+# shannon index, diversity vs income, script 12 does this all again and includes
+# the AIC calculations, script 12 is also better organized than this one
 
 # setup
 wd <- "~/Documents/research/spatial-income-project" # kyra pop wd

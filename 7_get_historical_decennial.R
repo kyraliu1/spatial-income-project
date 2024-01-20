@@ -1,3 +1,7 @@
+# getting historical decennial data from census.gov tables to look at county
+# level historical data, not in use later
+
+# setup
 this <- system('hostname', TRUE)
 if (this == "LAPTOP-IVSPBGCA") {
   wd <- "G:/.shortcut-targets-by-id/1mfeEftF_LgRcxOT98CBIaBbYN4ZHkBr_/share/spatial_income" 
@@ -11,6 +15,8 @@ dl <- function(furl, fpath){
     }
 }
 library(terra)
+
+# county boundaries
 counties <- geodata::gadm("usa",level = 2, ".")
 counties$state.name <- counties$NAME_1
 dir.create("./census",F,F)

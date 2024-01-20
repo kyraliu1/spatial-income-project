@@ -1,3 +1,6 @@
+# looking a little bit at first extract. not in use later
+
+# setup
 this <- system('hostname', TRUE)
 if (this == "LAPTOP-IVSPBGCA") {
   wd <- "G:/.shortcut-targets-by-id/1mfeEftF_LgRcxOT98CBIaBbYN4ZHkBr_/share/spatial_income" 
@@ -7,7 +10,7 @@ if (this == "LAPTOP-IVSPBGCA") {
 setwd(wd)
 library(ipumsr)
 
-
+# laod data
 dpath = "./ipums/usa_00001.xml"
 d = read_ipums_micro(dpath)
 
@@ -15,7 +18,7 @@ d = read_ipums_micro(dpath)
 # 
 # datacity <- d[d$CITY != 0,]
 # nocity <- d[d$CITY == 0,]
-
+# removing empty
 inc <-d[d$INCTOT!=9999999 & d$INCTOT!=0 &d$INCTOT != 1,c("STATEFIP","INCTOT","SEX","AGE","RACE")]
 states <- attr(d$STATEFIP,"labels")
 race <- attr(d$RACE,"labels")

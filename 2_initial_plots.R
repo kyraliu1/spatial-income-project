@@ -1,3 +1,10 @@
+# plots some of the data from opportunity insides. we looked at these in the 
+# very beginning
+
+
+# setup -------------------------------------------------------------------
+
+
 this <- system('hostname', TRUE)
 if (this == "LAPTOP-IVSPBGCA") {
   wd <- "G:/.shortcut-targets-by-id/1mfeEftF_LgRcxOT98CBIaBbYN4ZHkBr_/share/spatial_income" 
@@ -14,6 +21,9 @@ source("./1_donwload_opinsights.R")
 # comzones <- vect(comzoneshape)
 # outfi <- "raw/opinsights/parentalincome"
 # parental <- read.csv(outfi)
+
+# exploring ---------------------------------------------------------------
+
 
 
 comzones <- vect(comzoneshape)

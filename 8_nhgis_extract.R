@@ -1,6 +1,7 @@
 # extracting ipums nhgis data for income and race 1970/80 to 2010 
 # defines and downloads extract to ./ipums (creates if does not already exist)
 # data at state, county, city/sub, place level
+# i think this works, i dont know
 
 # setup 
 this <- system('hostname', TRUE)
@@ -41,7 +42,8 @@ counter = counter+1
 }
 
 dir.create('./ipums',FALSE)
-
+# have to wait for a little bit because the extract has to be completed before
+# it can be downloaded
 for (i in 1:length(smt)){
 if (get_extract_info(smt[[i]])$status=='completed'){
 

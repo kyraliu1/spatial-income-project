@@ -1,4 +1,5 @@
-# 
+# i used this mostly to see how the data is formatted, and take a very quick look
+
 
 # setup
 this <- system('hostname', TRUE)
