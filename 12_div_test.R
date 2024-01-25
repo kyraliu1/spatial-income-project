@@ -12,6 +12,7 @@ library(ggplot2)
 library(gridExtra)
 library(MASS)
 
+
 # read data ---------------------------------------------------------------
 
 
@@ -30,30 +31,35 @@ tract$medinc80[tract$medinc80 == 0] <- NA
 tract$medinc90[tract$medinc90 == 0] <- NA
 tract$medinc00[tract$medinc00 == 0] <- NA
 tract$medinc10[tract$medinc10 == 0] <- NA
+tract$medinc20[tract$medinc20 == 0] <- NA
+
 #tract <- tract[tract$STATE != 'Alaska',]
 
 county$medinc80[county$medinc80 == 0] <- NA
 county$medinc90[county$medinc90 == 0] <- NA
 county$medinc00[county$medinc00 == 0] <- NA
 county$medinc10[county$medinc10 == 0] <- NA
-
+county$medinc20[county$medinc20 == 0] <- NA
 
 # find H and e^H tracts ----------------------------------------------------------
 
 
-yr <- c('80', '90', '00' , '10')
-year <- c(1980,1990,2000,2010)
+yr <- c('80', '90', '00' , '10','20')
+year <- c(1980,1990,2000,2010,2020)
 htract <- list()
 
-for (i in 1:4){
+for (i in 1:5){
   
   w <- tract[[paste0('pwhite',yr[i])]]
   b <-tract[[paste0('pblack',yr[i])]]
   a <- tract[[paste0('paapi',yr[i])]]
   n <- tract[[paste0('pnative',yr[i])]]
   o <- tract[[paste0('pother',yr[i])]]
+  if (year[i] < 2000){
+    o = 1
+  }
   
-  htract[[i]] <- -1*(w * log(w)+ b * log(b)+ a * log(a)+ n * log(n)+o * log(o))
+  htract[[i]] <- -1*(w * log(w)+ b * log(b)+ a * log(a)+ n * log(n) +o * log(o))
   tract[[paste0('h',yr[i])]] <- exp(htract[[i]])
   
 }
@@ -66,8 +72,8 @@ modtract = list()
 hextract= list()
 steptract = list()
 
-newx <- seq(1,4,length.out = 100)
-nx <- data.frame(h80 = newx, h90 = newx, h00 = newx, h10 = newx)
+newx <- seq(1,5,length.out = 100)
+nx <- data.frame(h80 = newx, h90 = newx, h00 = newx, h10 = newx,h20 = newx)
 #modeling tracts
 par(mfrow = c(2,2),mar = c(4,4,3,1),las = 1)
 #for(i in 1:4){
@@ -77,7 +83,7 @@ par(mfrow = c(2,2),mar = c(4,4,3,1),las = 1)
 
 modsel <- function(dlevel){
   results <- list()  
-  for (i in 1:4){
+  for (i in 1:5){
   m <- paste0('medinc',yr[i])
   h <- paste0('h',yr[i])
   quadmod <- lm(paste0(m,'~',h,'+ I(',h,'^2)'),data = dlevel)
@@ -92,13 +98,13 @@ modsel <- function(dlevel){
   #tract[[paste0('htfit',yr[i])]] <- modtract[[i]]$fitted.values
   #hextract[[i]] <- hexbin(exp(htract[[i]]),tract[[paste0('medinc',yr[i])]])
 }
-tractsel <- modsel(tract)
+#tractsel <- modsel(tract)
 
 #}
 
 # plotting tracts ---------------------------------------------------------
 
-for(i in 1:4){
+for(i in 1:5){
   
     m <- paste0('medinc',yr[i])
     h <- paste0('h',yr[i])
@@ -150,14 +156,16 @@ title(expression("Tract:County Median Income vs. " * e^italic(H)),outer = T,line
 
 hcounty <- list()
 
-for (i in 1:4){
+for (i in 1:5){
   
   w <- county[[paste0('pwhite',yr[i])]]
   b <-county[[paste0('pblack',yr[i])]]
   a <- county[[paste0('paapi',yr[i])]]
   n <- county[[paste0('pnative',yr[i])]]
   o <- county[[paste0('pother',yr[i])]]
-  
+  if (year[i] < 2000){
+    o = 1
+  }
   hcounty[[i]] <- -1*(w * log(w)+ b * log(b)+ a * log(a)+ n * log(n)+o * log(o))
   county[[paste0('h',yr[i])]] <- exp(hcounty[[i]])
   
@@ -171,7 +179,7 @@ modcounty = list()
 countysel <- modsel(county)
 
 
-for(i in 1:4){
+for(i in 1:5){
   
   # variable names for year
   m <- paste0('medinc',yr[i])
@@ -202,14 +210,16 @@ title(expression("County:State Median Income vs. " * e^italic(H)),outer = T,line
 
 hstate <- list()
 
-for (i in 1:4){
+for (i in 1:5){
   
   w <- state[[paste0('pwhite',yr[i])]]
   b <-state[[paste0('pblack',yr[i])]]
   a <- state[[paste0('paapi',yr[i])]]
   n <- state[[paste0('pnative',yr[i])]]
   o <- state[[paste0('pother',yr[i])]]
-  
+  if (year[i] < 2000){
+    o = 1
+  }
   hstate[[i]] <- -1*(w * log(w)+ b * log(b)+ a * log(a)+ n * log(n)+o * log(o))
   state[[paste0('h',yr[i])]] <- exp(hstate[[i]])
   
@@ -221,7 +231,7 @@ modstate = list()
 par(mfrow = c(2,2),mar = c(4,4,3,1),las = 1)
 
 
-for(i in 1:4){
+for(i in 1:5){
   
   # variable names for year
   m <- paste0('medinc',yr[i])
