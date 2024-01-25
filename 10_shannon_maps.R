@@ -228,3 +228,5 @@ plot(states,'h90',type = 'continuous',border = NA, main = expression( e^italic(H
 plot(states,'h00',type = 'continuous',border = NA, main = expression( e^italic(H) * ' state 2000'),range = c(1,4),col = pal)
 # 
 plot(states,'h10',type = 'continuous',border = NA, main = expression( e^italic(H)* ' state 2010'),range = c(1,4),col = pal)
+
+plot(states,'h20',type = 'continuous',border = NA, main = expression( e^italic(H)* ' state 2020'),range = c(1,4),col = pal)

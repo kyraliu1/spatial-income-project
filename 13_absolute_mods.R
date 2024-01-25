@@ -30,6 +30,8 @@ county <- readRDS('./ipums/county_by_state')
 # clean data --------------------------------------------------------------
 
 names(tract)[names(tract) == 'B79AA135'] <- 'B79AA2010'
+names(tract)[names(tract) == 'B79AA205'] <- 'B79AA2020'
+
 tract$B79AA1980[tract$B79AA1980 == 0] <- NA
 tract$B79AA1990[tract$B79AA1990 == 0] <- NA
 tract$B79AA2000[tract$B79AA2000 == 0] <- NA
@@ -38,6 +40,7 @@ tract$B79AA2010[tract$B79AA2010 == 0] <- NA
 #tract <- tract[tract$STATE != 'Alaska',]
 county <- readRDS('./ipums/county_by_state')
 names(county)[names(county) == 'B79AA135'] <- 'B79AA2010'
+names(county)[names(county) == 'B79AA205'] <- 'B79AA2020'
 
 county$B79AA1980[county$B79AA1980 == 0] <- NA
 county$B79AA1990[county$B79AA1990 == 0] <- NA
@@ -46,6 +49,7 @@ county$B79AA2000[county$B79AA2000 == 0] <- NA
 
 
 names(state)[names(state) == 'B79AA135'] <- 'B79AA2010'
+names(state)[names(state) == 'B79AA205'] <- 'B79AA2020'
 
 
 #tract <- tract[tract$STATE != 'Alaska',]
@@ -53,18 +57,20 @@ names(state)[names(state) == 'B79AA135'] <- 'B79AA2010'
 # find H and e^H tracts ----------------------------------------------------------
 
 
-yr <- c('80', '90', '00' , '10')
-year <- c(1980,1990,2000,2010)
+yr <- c('80', '90', '00' , '10','20')
+year <- c(1980,1990,2000,2010,2020)
 htract <- list()
 
-for (i in 1:4){
+for (i in 1:5){
   
   w <- tract[[paste0('pwhite',yr[i])]]
   b <-tract[[paste0('pblack',yr[i])]]
   a <- tract[[paste0('paapi',yr[i])]]
   n <- tract[[paste0('pnative',yr[i])]]
   o <- tract[[paste0('pother',yr[i])]]
-  
+  if (year[i]<2000){
+    o = 1
+  }
   htract[[i]] <- -1*(w * log(w)+ b * log(b)+ a * log(a)+ n * log(n)+o * log(o))
   tract[[paste0('h',yr[i])]] <- exp(htract[[i]])
   
@@ -134,7 +140,9 @@ for (i in 1:4){
   a <- county[[paste0('paapi',yr[i])]]
   n <- county[[paste0('pnative',yr[i])]]
   o <- county[[paste0('pother',yr[i])]]
-  
+  if (year[i]<2000){
+    o = 1
+  }
   hcounty[[i]] <- -1*(w * log(w)+ b * log(b)+ a * log(a)+ n * log(n)+o * log(o))
   county[[paste0('h',yr[i])]] <- exp(hcounty[[i]])
   
@@ -187,7 +195,9 @@ for (i in 1:4){
   a <- state[[paste0('paapi',yr[i])]]
   n <- state[[paste0('pnative',yr[i])]]
   o <- state[[paste0('pother',yr[i])]]
-  
+  if (year[i]<2000){
+    o = 1
+  }
   hstate[[i]] <- -1*(w * log(w)+ b * log(b)+ a * log(a)+ n * log(n)+o * log(o))
   state[[paste0('h',yr[i])]] <- exp(hstate[[i]])
   
