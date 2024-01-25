@@ -170,17 +170,20 @@ tract <- tract[tract$STATE != 'Hawaii',]
  ts <- vect('./ipums/bounds/US_tract_2010.shp')
  names(ts)[13] <- "GJOIN2010"
 
+#pal = c("#FF8C42", "#FFD133", "#8CFF42", "#42FFD1", "#428CFF", "#D133FF")
+pal = c( "#E3B2E3", "#800080",'#301934')
+ pal = colorRampPalette(pal)(100)
 
 tract <- merge(ts,tract)
 par(mfrow = c(1,1))
 
-plot(tract,'h80',type = 'continuous',border = NA, main = expression( e^italic(H) * 'census tract 1980'),range = c(1,4),col = colorRampPalette(c('lightgrey','black'))(100))
+plot(tract,'h80',type = 'continuous',border = NA, main = expression( e^italic(H) * 'census tract 1980'),range = c(1,4),col = pal)
 
-plot(tract,'h90',type = 'continuous',border = NA, main = expression( e^italic(H) * 'census tract 1990'),range = c(1,4),col = colorRampPalette(c('lightgrey','black'))(100))
+plot(tract,'h90',type = 'continuous',border = NA, main = expression( e^italic(H) * 'census tract 1990'),range = c(1,4),col = pal)
 
-plot(tract,'h00',type = 'continuous',border = NA, main = expression( e^italic(H) * 'census tract 2000'),range = c(1,4),col = colorRampPalette(c('lightgrey','black'))(100))
+plot(tract,'h00',type = 'continuous',border = NA, main = expression( e^italic(H) * 'census tract 2000'),range = c(1,4),col = pal)
 
-plot(tract,'h10',type = 'continuous',border = NA, main = expression( e^italic(H)* 'census tract 2010'),range = c(1,4),col = colorRampPalette(c('lightgrey','black'))(100))
+plot(tract,'h10',type = 'continuous',border = NA, main = expression( e^italic(H)* 'census tract 2010'),range = c(1,4),col = pal)
 
 #tract$density80 <- tract$pop80/tract$area 
 # county plots

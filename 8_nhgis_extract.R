@@ -16,12 +16,13 @@ library(dplyr)
 library(terra)
 
 # desired tables & geography
-tab <- c('B08','B79','AB2', 'BD5','AV0')
+tab <- c('B08','B79','AB2', 'BD5','AV0','B18')
 # B08: persons by detailed race 1970 - 2010
 # B79: median household income in previous year 1980-2021
 # AB2: median family income in previous year 1980-2021
 # BD5: per capita income in previous year 1980-2021
 # AV0: total population
+# B18: persons by race 1970-2021
 ge <- c('state','county','tract','cty_sub','place')
 
 # submit & download extracts
