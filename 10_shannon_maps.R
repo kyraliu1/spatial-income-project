@@ -21,6 +21,8 @@ tract$medinc80[tract$medinc80 == 0] <- NA
 tract$medinc90[tract$medinc90 == 0] <- NA
 tract$medinc00[tract$medinc00 == 0] <- NA
 tract$medinc10[tract$medinc10 == 0] <- NA
+tract$medinc20[tract$medinc20 == 0] <- NA
+
 county <- readRDS('./ipums/county_by_state')
 #tract <- tract[tract$STATE != 'Alaska',]
 
@@ -28,19 +30,21 @@ county$medinc80[county$medinc80 == 0] <- NA
 county$medinc90[county$medinc90 == 0] <- NA
 county$medinc00[county$medinc00 == 0] <- NA
 county$medinc10[county$medinc10 == 0] <- NA
-
-yr <- c('80', '90', '00' , '10')
-year <- c(1980,1990,2000,2010)
+county$medinc20[county$medinc20 == 0] <- NA
+yr <- c('80', '90', '00' , '10','20')
+year <- c(1980,1990,2000,2010,2020)
 htract <- list()
 
-for (i in 1:4){
+for (i in 1:length(year)){
   
   w <- tract[[paste0('pwhite',yr[i])]]
   b <-tract[[paste0('pblack',yr[i])]]
   a <- tract[[paste0('paapi',yr[i])]]
   n <- tract[[paste0('pnative',yr[i])]]
   o <- tract[[paste0('pother',yr[i])]]
-  
+  if (year[i] < 2000){
+    o = 1
+  }
   htract[[i]] <- -1*(w * log(w)+ b * log(b)+ a * log(a)+ n * log(n)+o * log(o))
   tract[[paste0('h',yr[i])]] <- exp(htract[[i]])
   
@@ -48,11 +52,11 @@ for (i in 1:4){
 modtract = list()
 hextract= list()
 
-newx <- seq(1,4,length.out = 100)
-nx <- data.frame(h80 = newx, h90 = newx, h00 = newx, h10 = newx)
+newx <- seq(1,length(year),length.out = 100)
+nx <- data.frame(h80 = newx, h90 = newx, h00 = newx, h10 = newx,h20 = newx)
 
 par(mfrow = c(2,2),mar = c(4,4,3,1),las = 1)
-for(i in 1:4){
+for(i in 1:length(year)){
   m <- paste0('medinc',yr[i])
   h <- paste0('h',yr[i])
   modtract[[i]] <- lm(paste0(m,'~',h),data = tract)
@@ -71,20 +75,22 @@ lines(nx[,i],fit,col = 'red',lwd = 2)
 }
 title(expression("Tract:County Median Income vs. " * e^italic(H)),outer = T,line = -1.5)
 
-for (i in 1:4){
+for (i in 1:length(year)){
   plot(hextract[[i]] ,xlab = expression(e^italic(H)),ylab = 'median income ratio',
        main = expression("Tract to County Median Income vs. " * e^italic(H)))
 }
 hcounty <- list()
 
-for (i in 1:4){
+for (i in 1:length(year)){
   
   w <- county[[paste0('pwhite',yr[i])]]
   b <-county[[paste0('pblack',yr[i])]]
   a <- county[[paste0('paapi',yr[i])]]
   n <- county[[paste0('pnative',yr[i])]]
   o <- county[[paste0('pother',yr[i])]]
-  
+  if (year[i] < 2000){
+    o = 1
+  }
   hcounty[[i]] <- -1*(w * log(w)+ b * log(b)+ a * log(a)+ n * log(n)+o * log(o))
   county[[paste0('h',yr[i])]] <- exp(hcounty[[i]])
   
@@ -93,7 +99,7 @@ for (i in 1:4){
 modcounty = list()
 
 
-for(i in 1:4){
+for(i in 1:length(year)){
   
   # variable names for year
   m <- paste0('medinc',yr[i])
@@ -121,14 +127,16 @@ title(expression("County:State Median Income vs. " * e^italic(H)),outer = T,line
 
 hstate <- list()
 
-for (i in 1:4){
+for (i in 1:length(year)){
   
   w <- state[[paste0('pwhite',yr[i])]]
   b <-state[[paste0('pblack',yr[i])]]
   a <- state[[paste0('paapi',yr[i])]]
   n <- state[[paste0('pnative',yr[i])]]
   o <- state[[paste0('pother',yr[i])]]
-  
+  if (year[i] < 2000){
+    o = 1
+  }
   hstate[[i]] <- -1*(w * log(w)+ b * log(b)+ a * log(a)+ n * log(n)+o * log(o))
   state[[paste0('h',yr[i])]] <- exp(hstate[[i]])
   
@@ -139,7 +147,7 @@ modstate = list()
 par(mfrow = c(2,2),mar = c(4,4,3,1),las = 1)
 
 
-for(i in 1:4){
+for(i in 1:length(year)){
   
   # variable names for year
   m <- paste0('medinc',yr[i])
@@ -184,6 +192,7 @@ plot(tract,'h90',type = 'continuous',border = NA, main = expression( e^italic(H)
 plot(tract,'h00',type = 'continuous',border = NA, main = expression( e^italic(H) * 'census tract 2000'),range = c(1,4),col = pal)
 
 plot(tract,'h10',type = 'continuous',border = NA, main = expression( e^italic(H)* 'census tract 2010'),range = c(1,4),col = pal)
+plot(tract,'h20',type = 'continuous',border = NA, main = expression( e^italic(H)* 'census tract 2020'),range = c(1,4),col = pal)
 
 #tract$density80 <- tract$pop80/tract$area 
 # county plots
@@ -196,13 +205,14 @@ county$fullname <- paste0(county$COUNTY,', ',county$STATE)
 county <- merge(usa,county,by = 'fullname')
 county <- county[county$NAME_1 != "Hawaii"]
 par(mfrow = c(1,1))
-plot(county,'h80',type = 'continuous',border = NA, main = expression( e^italic(H) * ' county 1980'),range = c(1,4),col = colorRampPalette(c('lightgrey','black'))(100))
+plot(county,'h80',type = 'continuous',border = NA, main = expression( e^italic(H) * ' county 1980'),range = c(1,4),col = pal)
 # 
-plot(county,'h90',type = 'continuous',border = NA, main = expression( e^italic(H) * ' county 1990'),range = c(1,4),col = colorRampPalette(c('lightgrey','black'))(100))
+plot(county,'h90',type = 'continuous',border = NA, main = expression( e^italic(H) * ' county 1990'),range = c(1,4),col = pal)
 # 
-plot(county,'h00',type = 'continuous',border = NA, main = expression( e^italic(H) * ' county 2000'),range = c(1,4),col = colorRampPalette(c('lightgrey','black'))(100))
+plot(county,'h00',type = 'continuous',border = NA, main = expression( e^italic(H) * ' county 2000'),range = c(1,4),col = pal)
 # 
-plot(county,'h10',type = 'continuous',border = NA, main = expression( e^italic(H)* ' county 2010'),range = c(1,4),col = colorRampPalette(c('lightgrey','black'))(100))
+plot(county,'h10',type = 'continuous',border = NA, main = expression( e^italic(H)* ' county 2010'),range = c(1,4),col = pal)
+plot(county,'h20',type = 'continuous',border = NA, main = expression( e^italic(H)* ' county 2020'),range = c(1,4),col = pal)
 
 states <- gadm("usa",".",level = 1)
 names(states)[4] <- "STATE"
@@ -211,10 +221,10 @@ states <- states[states$STATE != "Alaska"]
 states <- states[states$STATE != "Hawaii"]
 
 par(mfrow = c(1,1))
-plot(states,'h80',type = 'continuous',border = NA, main = expression( e^italic(H) * ' state 1980'),range = c(1,4),col = colorRampPalette(c('lightgrey','black'))(100))
+plot(states,'h80',type = 'continuous',border = NA, main = expression( e^italic(H) * ' state 1980'),range = c(1,4),col = pal)
 # 
-plot(states,'h90',type = 'continuous',border = NA, main = expression( e^italic(H) * ' state 1990'),range = c(1,4),col = colorRampPalette(c('lightgrey','black'))(100))
+plot(states,'h90',type = 'continuous',border = NA, main = expression( e^italic(H) * ' state 1990'),range = c(1,4),col = pal)
 # 
-plot(states,'h00',type = 'continuous',border = NA, main = expression( e^italic(H) * ' state 2000'),range = c(1,4),col = colorRampPalette(c('lightgrey','black'))(100))
+plot(states,'h00',type = 'continuous',border = NA, main = expression( e^italic(H) * ' state 2000'),range = c(1,4),col = pal)
 # 
-plot(states,'h10',type = 'continuous',border = NA, main = expression( e^italic(H)* ' state 2010'),range = c(1,4),col = colorRampPalette(c('lightgrey','black'))(100))
+plot(states,'h10',type = 'continuous',border = NA, main = expression( e^italic(H)* ' state 2010'),range = c(1,4),col = pal)
