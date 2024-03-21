@@ -65,7 +65,7 @@ year <- c(1980,1990,2000,2010,2020)
   b <- ifelse(county[['without_pblack']] == 0, 1, county[['without_pblack']])
   a <- ifelse(county[['without_paapi']] == 0, 1, county[['without_paapi']])
   n <- ifelse(county[['without_pnative']] == 0, 1, county[['without_pnative']])
- # o <- ifelse(county[[paste0('pother', yr[i])]] == 0, 1, county[[paste0('pother', yr[i])]])
+#  o <- ifelse(county[[paste0('pother', yr[i])]] == 0, 1, county[[paste0('pother', yr[i])]])
   
   
  
@@ -77,7 +77,7 @@ year <- c(1980,1990,2000,2010,2020)
 tract <- tract[tract$STATE != 'Alaska',]
 
 tract <- tract[tract$STATE != 'Hawaii',]
-ts <- vect('./ipums/bounds/US_tract_2010.shp')
+#ts <- vect('./ipums/bounds/US_tract_2010.shp')
 
 ts1980 <- vect('./ipums/bounds/US_tract_1980')
 ts1990 <- vect('./ipums/bounds/US_tract_1990')
@@ -85,7 +85,7 @@ ts2000 <- vect('./ipums/bounds/US_tract_2000')
 ts2010 <- vect('./ipums/bounds/US_tract_2010')
 ts2020 <- vect('./ipums/bounds/US_tract_2020')
 
-names(ts)[13] <- "GJOIN2010"
+#names(ts)[13] <- "GJOIN2010"
 
 names(ts1980)[names(ts1980) == "GISJOIN"] <- "GJOIN1980"
 names(ts1990)[names(ts1990) == "GISJOIN"] <- "GJOIN1990"

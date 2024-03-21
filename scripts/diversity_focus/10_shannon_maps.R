@@ -10,7 +10,9 @@ library(terra)
 library(geodata)
 library(hexbin)
 library(viridis)
+library(RColorBrewer)
 
+source("./scripts/color_bar_func.R")
 state <- readRDS('./ipums/state_level_d')
 
 # H = -sum(p * ln(p))
@@ -147,6 +149,7 @@ o <- ifelse(state[[paste0('pother', yr[i])]] == 0, 1, state[[paste0('pother', yr
   
 }
 
+
 # state 
 modstate = list()
 par(mfrow = c(2,3),mar = c(4,4,3,1),las = 1)
@@ -197,19 +200,8 @@ tract <- tract[tract$STATE != 'Hawaii',]
  names(ts2010)[names(ts2010) == "GISJOIN"] <- "GJOIN2010"
  names(ts2020)[names(ts2020) == "GISJOIN"] <- "GJOIN2020"
  
-pal = viridis(5)
+pal = plasma(6)
  pal = colorRampPalette(pal)(100)
- color.bar <- function(lut, min, max=-min, nticks=11, ticks=seq(min, max, len=nticks), title='') {
-   scale = (length(lut)-1)/(max-min)
-   
-   #dev.new(width=1.75, height=5)
-   plot(c(0,10), c(min,max), type='n', bty='n', xaxt='n', xlab='', yaxt='n', ylab='', main=title)
-   axis(2, ticks, las=1)
-   for (i in 1:(length(lut)-1)) {
-     y = (i-1)/scale + min
-     rect(0,y,10,y+1/scale, col=lut[i], border=NA)
-   }
- }
 
 tract80 <- merge(ts1980,tract,by = "GJOIN1980")
 tract90 <- merge(ts1990,tract,by = 'GJOIN1990')
@@ -260,6 +252,7 @@ plot(county,'h20',type = 'continuous',border = NA, main = expression( e^italic(H
 
 states <- gadm("usa",".",level = 1)
 states <- project(states,crs(tract80))
+
 
 names(states)[4] <- "STATE"
 states <- merge(states,state,by = "STATE")
